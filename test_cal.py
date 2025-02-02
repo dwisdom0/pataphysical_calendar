@@ -55,6 +55,13 @@ class TestCal(TestCase):
         pd = PataphysicalDate(1, "Pédale", 147)
         self.assertEqual(pd.date_vulg, date_vulg)
 
+    def test_gueules(self):
+       date_vulg = date(2025, 1, 26)
+       pd = PataphysicalDate.from_vulgate(date_vulg)
+       self.assertEqual(str(pd), "Sunday 1 Gueules 152")
+       pd = PataphysicalDate(1, "Gueules", 152)
+       self.assertEqual(pd.date_vulg, date_vulg)
+
     # TODO: test negative dates? dates before 1873?
 
     def test_full_non_leap_year(self):

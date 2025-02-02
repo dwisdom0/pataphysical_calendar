@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from calendar import isleap
 
 
 class PataphysicalDate:
@@ -8,15 +9,15 @@ class PataphysicalDate:
         self.year = year
         self.day_of_week = self.get_dow(day)
 
-        year_vulg = year + 1873 - 1
+        year_vulg = year + 1873
 
         # convert pataphysical to vulgate
         month_starts = {
-            "Absolu": date(year_vulg, 9, 8),
-            "Haha": date(year_vulg, 10, 6),
-            "As": date(year_vulg, 11, 3),
-            "Sable": date(year_vulg, 12, 1),
-            "Décervelage": date(year_vulg, 12, 29),
+            "Absolu": date(year_vulg-1, 9, 8),
+            "Haha": date(year_vulg-1, 10, 6),
+            "As": date(year_vulg-1, 11, 3),
+            "Sable": date(year_vulg-1, 12, 1),
+            "Décervelage": date(year_vulg-1, 12, 29),
             "Gueules": date(year_vulg, 1, 26),
             "Pédale": date(year_vulg, 2, 24) if self.is_leap(year) else date(year_vulg, 2, 23),
             "Clinamen": date(year_vulg, 3, 23),
@@ -28,21 +29,6 @@ class PataphysicalDate:
         }
 
         date_vulg = month_starts[month] + timedelta(days=day - 1)
-
-        if date_vulg < date(year_vulg, 9, 8):
-            date_vulg = date_vulg + timedelta(days=365)
-
-        # extra correction for leap years
-        if self.is_leap(year) and month in (
-            "Clinamen",
-            "Palotin",
-            "Merde",
-            "Gidouille",
-            "Tatane",
-            "Phalle",
-        ):
-            date_vulg = date_vulg + timedelta(days=1)
-
         self.date_vulg = date_vulg
 
     @classmethod
