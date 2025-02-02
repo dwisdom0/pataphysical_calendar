@@ -5,43 +5,77 @@ from cal import PataphysicalDate
 
 
 class TestCal(TestCase):
-    # maxDiff = None
 
     def test_first_day(self):
-        pd = PataphysicalDate.from_vulgate(date(1873, 9, 8))
+        date_vulg = date(1873, 9, 8)
+        pd = PataphysicalDate.from_vulgate(date_vulg)
         self.assertEqual(str(pd), "Sunday 1 Absolu 1")
+        pd = PataphysicalDate(1, "Absolu", 1)
+        self.assertEqual(pd.date_vulg, date_vulg)
 
     def test_jan_1(self):
-        pd = PataphysicalDate.from_vulgate(date(2000, 1, 1))
-        self.assertEqual(str(pd), "Wednesday 4 Decervelage 127")
+        date_vulg = date(2000, 1, 1)
+        pd = PataphysicalDate.from_vulgate(date_vulg)
+        self.assertEqual(str(pd), "Wednesday 4 Décervelage 127")
+        pd = PataphysicalDate(4, "Décervelage", 127)
+        self.assertEqual(pd.date_vulg, date_vulg)
 
     def test_day_of_week(self):
-        pd = PataphysicalDate.from_vulgate(date(2012, 11, 10))
+        date_vulg = date(2012, 11, 10)
+        pd = PataphysicalDate.from_vulgate(date_vulg)
         self.assertEqual(str(pd), "Sunday 8 As 140")
+        pd = PataphysicalDate(8, "As", 140)
+        self.assertEqual(pd.date_vulg, date_vulg)
 
-    # TODO: more tests
-    # test the 29th on the two months that have that
-    # honestly could proably just print out an entire year and compare it
-    # one for leap eyar and non-leap year
+    def test_leap_vulg(self):
+        date_vulg = date(2020, 2, 29)
+        pd = PataphysicalDate.from_vulgate(date_vulg)
+        self.assertEqual(str(pd), "Friday 6 Pédale 147")
+        pd = PataphysicalDate(6, "Pédale", 147)
+        self.assertEqual(pd.date_vulg, date_vulg)
+
+    def test_leap2(self):
+        date_vulg = date(2020, 3, 23)
+        pd = PataphysicalDate.from_vulgate(date_vulg)
+        self.assertEqual(str(pd), "Sunday 1 Clinamen 147")
+        pd = PataphysicalDate(1, "Clinamen", 147)
+        self.assertEqual(pd.date_vulg, date_vulg)
+
+    def test_leap3(self):
+        date_vulg = date(2020, 2, 23)
+        pd = PataphysicalDate.from_vulgate(date_vulg)
+        self.assertEqual(str(pd), "Sunday 29 Gueules 147")
+        pd = PataphysicalDate(29, "Gueules", 147)
+        self.assertEqual(pd.date_vulg, date_vulg)
+
+    def test_leap4(self):
+        date_vulg = date(2020, 2, 24)
+        pd = PataphysicalDate.from_vulgate(date_vulg)
+        self.assertEqual(str(pd), "Sunday 1 Pédale 147")
+        pd = PataphysicalDate(1, "Pédale", 147)
+        self.assertEqual(pd.date_vulg, date_vulg)
 
     # TODO: test negative dates? dates before 1873?
 
-    def test_print_non_leap_year(self):
+    def test_full_non_leap_year(self):
         d = date(1873, 9, 8)
-        to_compare = ""
-        for _ in range(365):
-            to_compare += str(PataphysicalDate.from_vulgate(d)) + "\n"
-            d += timedelta(days=1)
         with open("fixtures/non_leap_year_dump.txt", "r") as f:
-            text = f.read()
-        self.assertEqual(text, to_compare)
+            correct_pata_dates = [l.strip() for l in f.readlines()]
 
-    def test_print_leap_year(self):
-        d = date(2019, 9, 8)
-        to_compare = ""
-        for _ in range(366):
-            to_compare += str(PataphysicalDate.from_vulgate(d)) + "\n"
+        for correct_pata_date in correct_pata_dates:
+            self.assertEqual(correct_pata_date, str(PataphysicalDate.from_vulgate(d)))
+            pd = PataphysicalDate.from_str(correct_pata_date)
+            self.assertEqual(d, pd.date_vulg)
             d += timedelta(days=1)
+
+    def test_full_leap_year(self):
+        d = date(2019, 9, 8)
+
         with open("fixtures/leap_year_dump.txt", "r") as f:
-            text = f.read()
-        self.assertEqual(text, to_compare)
+            correct_pata_dates = [l.strip() for l in f.readlines()]
+
+        for correct_pata_date in correct_pata_dates:
+            self.assertEqual(correct_pata_date, str(PataphysicalDate.from_vulgate(d)))
+            pd = PataphysicalDate.from_str(correct_pata_date)
+            self.assertEqual(d, pd.date_vulg)
+            d += timedelta(days=1)

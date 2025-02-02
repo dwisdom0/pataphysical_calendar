@@ -1,15 +1,72 @@
-from datetime import date
+from datetime import date, timedelta
 
 
 class PataphysicalDate:
-    def __init__(
-        self, year: int, month: str, day: int, day_of_week: str, date_vulg: date
-    ):
-        self.year = year
-        self.month = month
+    def __init__(self, day: int, month: str, year: int):
         self.day = day
-        self.day_of_week = day_of_week
+        self.month = month
+        self.year = year
+        self.day_of_week = self.get_dow(day)
+
+        year_vulg = year + 1873 - 1
+
+        # convert pataphysical to vulgate
+        month_starts = {
+            "Absolu": date(year_vulg, 9, 8),
+            "Haha": date(year_vulg, 10, 6),
+            "As": date(year_vulg, 11, 3),
+            "Sable": date(year_vulg, 12, 1),
+            "Décervelage": date(year_vulg, 12, 29),
+            "Gueules": date(year_vulg, 1, 26),
+            "Pédale": date(year_vulg, 2, 24) if self.is_leap(year) else date(year_vulg, 2, 23),
+            "Clinamen": date(year_vulg, 3, 23),
+            "Palotin": date(year_vulg, 4, 20),
+            "Merde": date(year_vulg, 5, 18),
+            "Gidouille": date(year_vulg, 6, 15),
+            "Tatane": date(year_vulg, 7, 14),
+            "Phalle": date(year_vulg, 8, 11),
+        }
+
+        date_vulg = month_starts[month] + timedelta(days=day - 1)
+
+        if date_vulg < date(year_vulg, 9, 8):
+            date_vulg = date_vulg + timedelta(days=365)
+
+        # extra correction for leap years
+        if self.is_leap(year) and month in (
+            "Clinamen",
+            "Palotin",
+            "Merde",
+            "Gidouille",
+            "Tatane",
+            "Phalle",
+        ):
+            date_vulg = date_vulg + timedelta(days=1)
+
         self.date_vulg = date_vulg
+
+    @classmethod
+    def from_str(cls, s: str):
+        """
+        Assume day month year order
+        with no other puncuation
+        """
+        items = s.strip().split()
+        # have to drop the day-of-week at the beginning
+        if items[0].lower() in (
+            "sunday",
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ):
+            items = items[1:]
+        items[0] = int(items[0])
+        items[2] = int(items[2])
+
+        return cls(*items)
 
     @classmethod
     def from_vulgate(cls, date_vulg: date):
@@ -22,9 +79,9 @@ class PataphysicalDate:
             "Haha",
             "As",
             "Sable",
-            "Decervelage",  # technically there's supposed to be an acute accent on the first e
+            "Décervelage",
             "Gueules",
-            "Pedale",  # acute on first e
+            "Pédale",
             "Clinamen",
             "Palotin",
             "Merde",
@@ -70,7 +127,7 @@ class PataphysicalDate:
             and date(date_vulg.year, 12, 29) <= date_vulg
             and date_vulg <= date(date_vulg.year, 12, 31)
         ):
-            month = "Decervelage"
+            month = "Décervelage"
             month_idx = 4
 
         elif (
@@ -78,7 +135,7 @@ class PataphysicalDate:
             and date(date_vulg.year, 1, 1) <= date_vulg
             and date_vulg <= date(date_vulg.year, 1, 25)
         ):
-            month = "Decervelage"
+            month = "Décervelage"
             month_idx = 4
 
         assert month is not None
@@ -96,6 +153,17 @@ class PataphysicalDate:
         assert day is not None
         day += 1
 
+        return cls(day, month, year)
+
+    @staticmethod
+    def is_leap(year):
+        """
+        determines whether a Pataphysical year is a leap year
+        """
+        return (year + 1) % 4 == 0
+
+    @staticmethod
+    def get_dow(day):
         days_of_week = [
             "Sunday",
             "Monday",
@@ -107,34 +175,9 @@ class PataphysicalDate:
         ]
 
         # depends on index -1 being the last item in the list
-        day_of_week = days_of_week[(day % len(days_of_week)) - 1]
-
-        return cls(year, month, day, day_of_week, date_vulg)
-
-    @staticmethod
-    def is_leap(year):
-        """
-        determines whether a Pataphysical year is a leap year
-        """
-        return (year + 1) % 4 == 0
+        return days_of_week[(day % len(days_of_week)) - 1]
 
     def __repr__(self):
         return f"{self.day_of_week} {self.day} {self.month} {self.year}"
 
 
-if __name__ == "__main__":
-    pd_easy = PataphysicalDate.from_vulgate(date(2024, 5, 16))
-    pd_endpoint = PataphysicalDate.from_vulgate(date(2024, 8, 15))
-    pd_year_incr = PataphysicalDate.from_vulgate(date(2024, 11, 6))
-
-    # wikipedia examples
-    # I guess these should be test cases
-
-    # should be 1 Absolu 1
-    pd_start = PataphysicalDate.from_vulgate(date(1873, 9, 8))
-
-    # should be 4 Decervelage 127
-    pd_jan_2000 = PataphysicalDate.from_vulgate(date(2000, 1, 1))
-
-    # should be 8 As 140 (Sunday)
-    pd_dow = PataphysicalDate.from_vulgate(date(2012, 11, 10))
