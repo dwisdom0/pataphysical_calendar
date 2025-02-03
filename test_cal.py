@@ -5,7 +5,6 @@ from cal import PataphysicalDate
 
 
 class TestCal(TestCase):
-
     def test_first_day(self):
         date_vulg = date(1873, 9, 8)
         pd = PataphysicalDate.from_vulgate(date_vulg)
@@ -56,11 +55,11 @@ class TestCal(TestCase):
         self.assertEqual(pd.date_vulg, date_vulg)
 
     def test_gueules(self):
-       date_vulg = date(2025, 1, 26)
-       pd = PataphysicalDate.from_vulgate(date_vulg)
-       self.assertEqual(str(pd), "Sunday 1 Gueules 152")
-       pd = PataphysicalDate(1, "Gueules", 152)
-       self.assertEqual(pd.date_vulg, date_vulg)
+        date_vulg = date(2025, 1, 26)
+        pd = PataphysicalDate.from_vulgate(date_vulg)
+        self.assertEqual(str(pd), "Sunday 1 Gueules 152")
+        pd = PataphysicalDate(1, "Gueules", 152)
+        self.assertEqual(pd.date_vulg, date_vulg)
 
     # TODO: test negative dates? dates before 1873?
 

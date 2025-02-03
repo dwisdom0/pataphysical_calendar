@@ -13,13 +13,15 @@ class PataphysicalDate:
 
         # convert pataphysical to vulgate
         month_starts = {
-            "Absolu": date(year_vulg-1, 9, 8),
-            "Haha": date(year_vulg-1, 10, 6),
-            "As": date(year_vulg-1, 11, 3),
-            "Sable": date(year_vulg-1, 12, 1),
-            "Décervelage": date(year_vulg-1, 12, 29),
+            "Absolu": date(year_vulg - 1, 9, 8),
+            "Haha": date(year_vulg - 1, 10, 6),
+            "As": date(year_vulg - 1, 11, 3),
+            "Sable": date(year_vulg - 1, 12, 1),
+            "Décervelage": date(year_vulg - 1, 12, 29),
             "Gueules": date(year_vulg, 1, 26),
-            "Pédale": date(year_vulg, 2, 24) if self.is_leap(year) else date(year_vulg, 2, 23),
+            "Pédale": date(year_vulg, 2, 24)
+            if self.is_leap(year)
+            else date(year_vulg, 2, 23),
             "Clinamen": date(year_vulg, 3, 23),
             "Palotin": date(year_vulg, 4, 20),
             "Merde": date(year_vulg, 5, 18),
@@ -165,5 +167,3 @@ class PataphysicalDate:
 
     def __repr__(self):
         return f"{self.day_of_week} {self.day} {self.month} {self.year}"
-
-

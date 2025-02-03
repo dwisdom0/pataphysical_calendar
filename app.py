@@ -12,5 +12,3 @@ st.write("Pataphysical date: `", str(pd), "`")
 pd_in = st.text_input("Enter a Pataphysical date", value=str(pd))
 d_in = PataphysicalDate.from_str(pd_in).date_vulg
 st.write(f"Vulgate date: `{d_in.strftime('%A %d %B %Y')} ({str(d_in)})`")
-
-
