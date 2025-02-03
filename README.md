@@ -1,8 +1,8 @@
-![img][doc/img/img.png]
+![img](doc/img/img.png)
 
 # Background
 This repo is a quick Python implementation of the
-['Pataphysical calendar][https://en.wikipedia.org/wiki/'Pataphysics#Pataphysical_calendar].
+['Pataphysical calendar](https://en.wikipedia.org/wiki/'Pataphysics#Pataphysical_calendar).
 
 # Quickstart
 uv
